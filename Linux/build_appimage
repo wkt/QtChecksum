@@ -1,0 +1,60 @@
+#!/bin/bash
+
+selfdir=`dirname $0`
+appimagetool=${selfdir}/appimagetool
+CC=gcc
+nautilus_ex_dir=$(pkg-config  --variable=extensiondir libnautilus-extension)
+
+qmake -makefile  QMAKE_STRIP=: PREFIX=/usr QMAKE_CXXFLAGS=-D__NO_FILE_MENU_ITEM__=1 QMAKE_LDFLAGS+=-rpath
+ncores=`grep vendor_id /proc/cpuinfo |wc -l`
+make clean
+make -j${ncores}
+tmpdir=`mktemp -d /tmp/appimage.XXXXXX`
+#tmpdir='/tmp/test.XX'
+ROOT_DIR=${tmpdir}
+rm -rf ${tmpdir}/*
+make -j12 install DESTDIR=${ROOT_DIR} AM_UPDATE_INFO_DIR=no INSTALL_ROOT=${ROOT_DIR} && make clean || exit 1
+
+ln -sf QtChecksum ${ROOT_DIR}/usr/bin/qtchecksum
+for s in 16 32 64 128 256; \
+do \
+    d=${ROOT_DIR}/usr/share/icons/hicolor/${s}x${s}/apps; \
+    mkdir -p ${d}; \
+    convert qthash.png -resize "${s}x${s}" ${d}/qtchecksum.png; \
+done
+ln -sf usr/share/icons/hicolor/256x256/apps/qtchecksum.png ${ROOT_DIR}/
+install -d ${ROOT_DIR}/usr/share/applications ${ROOT_DIR}${nautilus_ex_dir} ${ROOT_DIR}/usr/share/kservices5/ServiceMenus
+install -m 744 Linux/qtchecksum.desktop ${ROOT_DIR}/usr/share/applications/
+install -m 744 Linux/calculatechecksum.desktop ${ROOT_DIR}/usr/share/kservices5/ServiceMenus/
+ln -sf usr/share/applications/qtchecksum.desktop ${ROOT_DIR}/.desktop
+ln -sf usr/bin/QtChecksum ${ROOT_DIR}/AppRun
+${CC} -o ${ROOT_DIR}${nautilus_ex_dir}/libchecksum-nautilus.so Linux/checksum-nautilus.c -shared -Wl,-soname,libchecksum-nautilus.so `pkg-config --libs --cflags libnautilus-extension`
+strip --strip-unneeded ${ROOT_DIR}${nautilus_ex_dir}/libchecksum-nautilus.so
+
+drop(){ ##ugly .appimage require too much time to make qt deployment packing to work, so I quit.
+cat <<__EOF >${ROOT_DIR}/usr/bin/qt.conf
+[Paths]
+Prefix=..
+Binaries=bin
+Libraries=lib_deps
+Plugins=plugins
+__EOF
+
+#sofiles=$(ldd ${ROOT_DIR}/AppRun|grep '=>'|grep -E "$(patchelf ${ROOT_DIR}/AppRun --print-needed|tr '\r\n' '||'|sed 's/|$//g;s|\+|\\+|g')" |awk '{print $3}')
+sofiles=$(ldd ${ROOT_DIR}/AppRun|grep '=>'|awk '{print $3}')
+libdir=${ROOT_DIR}/lib_deps
+mkdir -p ${libdir}
+for f in $sofiles
+do
+    cp -av -L $f $libdir
+done
+mkdir -p ${ROOT_DIR}/lib_deps/plugins
+cp -av /usr/lib/x86_64-linux-gnu/qt5/plugins/platforms ${ROOT_DIR}/lib_deps/plugins
+patchelf  --set-rpath '$ORIGIN/lib_deps:$ORIGIN/../lib_deps:$ORIGIN/../../lib_deps' ${ROOT_DIR}/AppRun
+for f in ${libdir}/*.so*
+do
+    patchelf  --set-rpath '$ORIGIN' $f
+done
+}
+${appimagetool}  -s ${tmpdir}
+rm -rf ${tmpdir}

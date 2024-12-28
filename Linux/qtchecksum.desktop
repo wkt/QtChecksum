@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=QtChecksum
+Name[zh_CN]=Qt校验码计算器
+Comment=Checksum calculator
+Comment[zh_CN]=Qt版校验码计算器
+Exec=qtchecksum %F
+Terminal=false
+Type=Application
+StartupNotify=true
+Icon=qtchecksum
+Categories=Qt;Utility;
+Keywords=Checksum;QtChecksum;MD5;SHA1;SHA256;CRC32;
+

@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Service
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+MimeType=application/octet-stream;*/*;
+Actions=runInCalculateChecksum;
+X-KDE-AuthorizeAction=shell_access
+
+[Desktop Action runInCalculateChecksum]
+TryExec=qtchecksum
+Exec=qtchecksum %f
+Icon=qtchecksum
+
+Name=Calculate Checksum
+Name[zh]=计算校验码
+
+Comment=Calculate files's Checksum
+Comment[zh]=计算文件的校验码（MD5/SHA1/SHA256/CRC32）

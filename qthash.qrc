@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>qthash.png</file>
+        <file>options.svg</file>
+        <file>close.svg</file>
+        <file>arrow-left.svg</file>
+        <file>arrow-right.svg</file>
+    </qresource>
+    <qresource prefix="/translations">
+        <file>QtChecksum_zh.qm</file>
+    </qresource>
+</RCC>

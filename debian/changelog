@@ -1,0 +1,12 @@
+qtchecksum (1.0.3) unstable; urgency=low
+
+  * add search support
+  * fix bugs
+  
+ -- wkt <weikting@gmail.com>  Tue, 10 Dec 2024 21:43:22 +0800
+ 
+qtchecksum (1.0.0) unstable; urgency=medium
+
+  * Initial Release.
+
+ -- Wei Keting <weikting@gmail.com>  Sun, 31 May 2020 16:43:03 +0800

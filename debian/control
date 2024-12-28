@@ -1,0 +1,16 @@
+Source: qtchecksum
+Section: misc
+Priority: optional
+Maintainer: Wei Keting <weikting@gmail.com>
+Build-Depends: debhelper|debhelper-compat ,pkg-config,build-essential, libnautilus-extension-dev,qtbase5-dev(>=5.6),qtbase5-dev-tools(>=5.6),libqt5svg5-dev(>=5.6), qt5-default, imagemagick
+Standards-Version: 4.4.1
+Homepage: https://gitee.com/wkt/QtChecksum
+Vcs-Browser: https://gitee.com/wkt/QtChecksum
+Vcs-Git: https://gitee.com/wkt/QtChecksum.git
+
+Package: qtchecksum
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},libqt5svg5
+Recommends:qt5-gtk-platformtheme|qt5-gtk2-platformtheme
+Description: Qt-Based Utility for computing checksums
+ QtChecksum is a hash(MD5/SHA1/SHA256/CRC32) calculator written in Qt.

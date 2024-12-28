@@ -1,0 +1,4 @@
+CFBundleName = "Qt验证码计算器";
+CFBundleDisplayName = "Qt验证码计算器";
+NSPortName = "计算验证码";
+NSHumanReadableCopyright = "Copyright © 2020 WeiKeting. All rights reserved.";
