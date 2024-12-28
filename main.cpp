@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
 #endif
     QApplication::setOrganizationName(QT_ORGANIZATION_NAME);
     QApplication::setApplicationName(QT_APPLICATION_NAME);
+    QApplication::setApplicationVersion(VERSION);
     QtApp a(argc, argv);
 
     TR_ADD(qt_tr,"qtbase",QLibraryInfo::location(QLibraryInfo::TranslationsPath));

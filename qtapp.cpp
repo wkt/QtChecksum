@@ -21,7 +21,7 @@
 #include "utils.h"
 
 const char *BASE_URL = "https://api.weiketing.com/qtchecksum/";
-//const char *BASE_URL = "http://127.0.0.1:8080/cku.php/";
+//const char *BASE_URL = "http://127.0.0.1:10097/qtchecksum/";
 
 const char *KEY_VER = "ver";
 const char *KEY_DATE = "date";
@@ -258,8 +258,10 @@ void QtApp::checkUpdate()
     query.addQueryItem("osVer",QSysInfo::productVersion());
     query.addQueryItem("kernel",QSysInfo::kernelType());
     query.addQueryItem("kernelVer",QSysInfo::kernelVersion());
+    query.addQueryItem("cpuArch",QSysInfo::buildCpuArchitecture());
     query.addQueryItem("appVer",applicationVersion());
     query.addQueryItem("appName",applicationName());
+    query.addQueryItem("verCode",QString::asprintf("%d",VERSION_CODE));
 
     QObject::connect(nm,&QNetworkAccessManager::finished,this,&QtApp::handleNetworkReply);
     QNetworkReply *reply = nm->post(requestInfo,query.toString().toUtf8());
