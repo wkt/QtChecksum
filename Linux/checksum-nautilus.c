@@ -108,17 +108,18 @@ nautilus_menu_item_activate_cb (NautilusMenuItem *item,GSList *files){
 	for(guint i=0;i<n_files;i++){
 		const gchar* f = g_slist_nth_data(files,i);
 		gchar *command = g_strdup_printf("qtchecksum \"%s\"",f);
-		g_printerr("command %u: %s\n",i,command);
+		//g_printerr("command %u: %s\n",i,command);
 		g_spawn_command_line_async(command,NULL);
 		g_free (command);
 		if(i == 0 && n_files>1){
-			g_usleep(G_USEC_PER_SEC/4);
+			g_usleep(G_USEC_PER_SEC/2);
 		}
 	}
 }
 
 static void free_file_list(gpointer data,GObject* obj)
 {
+	//g_printerr("%s data: %p\n",__func__,data);
 	GSList *l = (GSList*)data;
 	if(l == NULL)return;
 	g_slist_foreach(l,(GFunc)g_free,NULL);
@@ -151,9 +152,7 @@ checksum_nautilus_get_file_items (NautilusMenuProvider *provider,
 	guint n_files = g_list_length (files);
 	gchar *uri;
 	gchar *path;
-	gint n = 0;
-	GSList* file_list = g_slist_alloc();
-
+	GSList* file_list = NULL;
 	for(guint i=0;i<n_files;i++){
 		uri = nautilus_file_info_get_uri(NAUTILUS_FILE_INFO(g_list_nth_data (files,i)));
 		if(i == 0){
