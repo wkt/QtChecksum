@@ -148,7 +148,7 @@ QCKHash::QCKHash(HashType ht)
         _name = "SHA3-256";
     break;
     case HashType::SHA3_512:
-        _name = "SHA3_512";
+        _name = "SHA3-512";
     break;
     case HashType::KECCAK_256:
         _name = "KECCAK-256";
