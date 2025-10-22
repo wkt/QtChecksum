@@ -101,14 +101,28 @@ check_nautilus_menu_item_enabled()
 	return ret;
 }
 
-static gchar cmd_args[4096] = {};
-
 static void
-nautilus_menu_item_activate_cb (NautilusMenuItem *item,const gchar *files){
-	gchar *command = g_strdup_printf("qtchecksum %s",files);
-	//g_printerr("command: %s\n",command);
-	g_spawn_command_line_async(command,NULL);
-	g_free (command);
+nautilus_menu_item_activate_cb (NautilusMenuItem *item,GSList *files){
+	if(files == NULL)return;
+	guint n_files = g_slist_length(files);
+	for(guint i=0;i<n_files;i++){
+		const gchar* f = g_slist_nth_data(files,i);
+		gchar *command = g_strdup_printf("qtchecksum \"%s\"",f);
+		g_printerr("command %u: %s\n",i,command);
+		g_spawn_command_line_async(command,NULL);
+		g_free (command);
+		if(i == 0 && n_files>1){
+			g_usleep(G_USEC_PER_SEC/4);
+		}
+	}
+}
+
+static void free_file_list(gpointer data,GObject* obj)
+{
+	GSList *l = (GSList*)data;
+	if(l == NULL)return;
+	g_slist_foreach(l,(GFunc)g_free,NULL);
+	g_slist_free(l);
 }
 
 static GList *
@@ -138,7 +152,8 @@ checksum_nautilus_get_file_items (NautilusMenuProvider *provider,
 	gchar *uri;
 	gchar *path;
 	gint n = 0;
-	bzero(cmd_args,sizeof(cmd_args));
+	GSList* file_list = g_slist_alloc();
+
 	for(guint i=0;i<n_files;i++){
 		uri = nautilus_file_info_get_uri(NAUTILUS_FILE_INFO(g_list_nth_data (files,i)));
 		if(i == 0){
@@ -149,14 +164,14 @@ checksum_nautilus_get_file_items (NautilusMenuProvider *provider,
 		}
 		path = g_filename_from_uri(uri,NULL,NULL);
 		g_free(uri);
-		n+=snprintf(cmd_args+n,sizeof(cmd_args)-n,"%s'%s'",i==0?"":" ",path);
-		g_free(path);
+		file_list = g_slist_insert(file_list, path, -1);
 	}
 	NautilusMenuItem *item = nautilus_menu_item_new("qtchecksum",
 	                                                get_nautilus_menu_item_label (),
 	                                                get_nautilus_menu_item_label (),
 	                                                "qtchecksum");
-	g_signal_connect(item,"activate",G_CALLBACK(nautilus_menu_item_activate_cb),cmd_args);
+	g_signal_connect(item,"activate",G_CALLBACK(nautilus_menu_item_activate_cb),file_list);
+	g_object_weak_ref(G_OBJECT(item),free_file_list,file_list);
 	GList *items = g_list_append(NULL,item);
 	return items;
 }
