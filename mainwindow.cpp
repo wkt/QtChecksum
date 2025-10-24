@@ -407,7 +407,15 @@ void MainWindow::dropEvent(QDropEvent *event){
     event->accept();
 };
 
-void MainWindow::setProgress(double fileProgress,double totalProgress){
+void MainWindow::setProgress(double fileProgress,double totalProgress,int currentFileIndex,int totalFileCount){
+    ui->fileProgressBar->setFormat(QString::asprintf("%.2f%%",fileProgress*100));
+    if(currentFileIndex>=0 && totalFileCount>0){
+        ui->totalProgressBar->setFormat(QString::asprintf("%.2f%% (%d/%d)",
+                                                         fileProgress*100,
+                                                         currentFileIndex,totalFileCount));
+    }else{
+        ui->totalProgressBar->setFormat(QString::asprintf("%.2f%%",totalProgress*100));
+    }
     ui->fileProgressBar->setValue(fileProgress*MAX_PROGRESS_VALUE);
     ui->totalProgressBar->setValue(totalProgress*MAX_PROGRESS_VALUE);
 }

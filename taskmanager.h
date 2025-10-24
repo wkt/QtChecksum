@@ -41,7 +41,8 @@ signals:
     void fileTaskStarted(const QFileInfo file);
     void fileTaskFinished(const QFileInfo file,const QString result);
 
-    void tasksProgress(double fileProgress,double totalProgress);
+    void tasksProgress(double fileProgress,double totalProgress,
+                       int currentIndex,int totalCount);
     void tasksFinished();
 
 public slots:

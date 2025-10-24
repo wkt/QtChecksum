@@ -234,7 +234,7 @@ void TaskManager::handleTasks(){
 
         //qDebug()<<"i="<<i<<","<<qfi<<qfi.absoluteFilePath()<<"\n";
         emit fileTaskStarted(qfi);
-        emit tasksProgress(0.0,_tProgSize*1.0/_totalSize);
+        emit tasksProgress(0.0,_tProgSize*1.0/_totalSize,i,totalTasks());
         qint64 n = 0;
         qint64 fSize = qfi.size();
         qint64 inSize = BUFFER_SIZE;
@@ -256,7 +256,7 @@ void TaskManager::handleTasks(){
                 _fProgSize += n;
                 if(msec == 0 || QDateTime::currentMSecsSinceEpoch()-msec>=UPDATE_RATE){
                     msec = QDateTime::currentMSecsSinceEpoch();
-                    emit tasksProgress(1.0*_fProgSize/fSize,_tProgSize*1.0/_totalSize);
+                    emit tasksProgress(1.0*_fProgSize/fSize,_tProgSize*1.0/_totalSize,i,totalTasks());
                 }
                 if(_abort)break;
             }
@@ -282,7 +282,7 @@ void TaskManager::handleTasks(){
         hash+="<br/></code>";
 
         _finishedTasks++;
-        emit tasksProgress(1.0*_fProgSize/qfi.size(),_tProgSize*1.0/_totalSize);
+        emit tasksProgress(1.0*_fProgSize/qfi.size(),_tProgSize*1.0/_totalSize,i+1,totalTasks());
         emit fileTaskFinished(tk->file,hash);
         QThread::msleep(THREAD_DELAY_MS);
     }

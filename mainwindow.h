@@ -31,7 +31,8 @@ public slots:
     void actionCopyTexts();
 
     void updateProgressStarted();
-    void setProgress(double fileProgress,double totalProgress);
+    void setProgress(double fileProgress,double totalProgress,
+                     int currentFileIndex=-1,int totalFileCount=-1);
     void updateProgressFinished();
     void updateFileProgressStarted(const QFileInfo file);
     void updateFileProgressFinished(const QFileInfo file,const QString result);

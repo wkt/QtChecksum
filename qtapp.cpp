@@ -207,10 +207,10 @@ public slots:
         dockTile->setIndicateNunber(tkm->totalTasks());
     }
 
-    void updateProgress(double fileProgress,double totalProgress){
-        window->setProgress(fileProgress,totalProgress);
+    void updateProgress(double fileProgress,double totalProgress, int currentIndex,int totalCount){
+        window->setProgress(fileProgress,totalProgress,currentIndex,totalCount);
         dockTile->setProgress(totalProgress);
-        dockTile->setIndicateNunber(tkm->totalTasks()-tkm->finishedTasks());
+        dockTile->setIndicateNunber(tkm->totalTasks() - tkm->finishedTasks());
     }
 
     void updateProgressFinished(){
